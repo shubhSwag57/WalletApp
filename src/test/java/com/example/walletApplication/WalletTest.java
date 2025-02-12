@@ -5,15 +5,14 @@ import com.example.walletApplication.Exceptions.NotEnoughMoneyInAccountException
 import com.example.walletApplication.model.Wallet;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WalletTest {
     @Test
     public void testWalletDepositExpectTrue(){
         Wallet wallet = new Wallet();
         wallet.deposit(100);
-        assertTrue(wallet.checkBalance(100));
+        assertEquals(100,wallet.getBalance());
     }
 
     @Test
@@ -21,7 +20,7 @@ public class WalletTest {
         Wallet wallet = new Wallet();
         wallet.deposit(100);
         wallet.withdraw(10);
-        assertTrue(wallet.checkBalance(90));
+        assertEquals(90,wallet.getBalance());
     }
 
     @Test

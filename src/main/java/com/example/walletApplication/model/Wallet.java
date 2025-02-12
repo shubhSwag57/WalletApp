@@ -27,11 +27,7 @@ public class Wallet {
         balance -= amount;
     }
 
-    public boolean checkBalance(double amount){
-        if(amount<=0){
-            throw new AmountShouldBePositiveException("Please enter positive amount");
-
-        }
-        return this.balance == amount;
+    public double getBalance(){
+        return this.balance;
     }
 }
