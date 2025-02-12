@@ -1,8 +1,7 @@
-package com.example.walletApplication;
+package com.example.walletApplication.models;
 
 import com.example.walletApplication.Exceptions.AmountShouldBePositiveException;
 import com.example.walletApplication.Exceptions.NotEnoughMoneyInAccountException;
-import com.example.walletApplication.model.Wallet;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

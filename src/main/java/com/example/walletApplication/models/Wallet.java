@@ -1,4 +1,4 @@
-package com.example.walletApplication.model;
+package com.example.walletApplication.models;
 
 import com.example.walletApplication.Exceptions.AmountShouldBePositiveException;
 import com.example.walletApplication.Exceptions.NotEnoughMoneyInAccountException;

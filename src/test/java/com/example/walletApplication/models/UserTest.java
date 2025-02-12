@@ -1,6 +1,5 @@
-package com.example.walletApplication;
+package com.example.walletApplication.models;
 
-import com.example.walletApplication.model.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

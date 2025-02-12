@@ -1,4 +1,4 @@
-package com.example.walletApplication.model;
+package com.example.walletApplication.models;
 
 public class User {
     private final String username;
