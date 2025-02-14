@@ -1,58 +1,38 @@
 package com.example.walletApplication.controller;
 
-import com.example.walletApplication.Exceptions.InsufficientBalanceExpections;
+import com.example.walletApplication.enums.Currency;
 import com.example.walletApplication.messages.Messages;
-import com.example.walletApplication.models.User;
-import com.example.walletApplication.services.UserService;
+import com.example.walletApplication.services.ClientService;
 import com.example.walletApplication.services.WalletService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/wallet")
 public class WalletController {
-    private final UserService userService;
-    private final WalletService walletService;
+    private ClientService clientService;
 
-    public WalletController(UserService userService, WalletService walletService){
-        this.userService = userService;
-        this.walletService = walletService;
-    }
+    private WalletService walletService;
 
-    @PostMapping("/register")
-    public String register(@RequestParam String username,@RequestParam String password){
-        return userService.register(username,password);
-    }
 
-    @PostMapping("/deposit")
-    public String deposit(@RequestParam String username,@RequestParam String password, @RequestParam double amount){
-        User user = userService.authenticate(username,password);
-        if(user == null){
-            return Messages.INVALID_CREDENTIALS;
+    @PostMapping("/{username}/deposit")
+    public ResponseEntity<String> deposit(@PathVariable String username, @RequestParam double amount, @RequestParam Currency currency) {
+        try {
+            walletService.deposit(username, amount, currency);
+            return new ResponseEntity<>(Messages.DEPOSITED_SUCCESSFULLY, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-        return walletService.deposit(user,amount);
-
     }
 
-    @PostMapping("/withdraw")
-    public String withdraw(@RequestParam String username,@RequestParam String password, @RequestParam double amount){
-        User user = userService.authenticate(username,password);
-        if(user == null){
-            return Messages.INVALID_CREDENTIALS;
+    @PostMapping("/{username}/withdraw")
+    public ResponseEntity<String> withdraw(@PathVariable String username, @RequestParam double amount, @RequestParam Currency currency) {
+        try {
+            walletService.withdraw(username, amount, currency);
+            return new ResponseEntity<>(Messages.WITHDRAW_SUCCESSFULLY, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return walletService.withdraw(user,amount);
-    }
-
-
-    @GetMapping("/balance")
-    public String getBalance(@RequestParam String username, @RequestParam String password){
-        User user = userService.authenticate(username,password);
-
-        if(user == null){
-            return Messages.INVALID_CREDENTIALS;
-        }
-        return walletService.getBalance(user);
     }
 }
