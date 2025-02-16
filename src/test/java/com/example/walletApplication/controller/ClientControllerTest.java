@@ -59,8 +59,9 @@ public class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"testUser\", \"password\": \"testPassword\"}"))
                 .andExpect(status().isOk())  // Expect HTTP 200
-                .andExpect(content().string(Messages.USER_REGISTERED_SUCCESSFULLY));  // Verify response message
+                .andExpect(content().string(Messages.USER_REGISTERED_SUCCESSFULLY));
     }
+
 
     @Test
     void testRegisterClientFailure() throws Exception {

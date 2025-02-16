@@ -33,7 +33,14 @@ public class ClientController {
         }
     }
 
-
-
+//    @PostMapping("/login")
+//    public ResponseEntity<Client> login(@RequestBody Client client) {
+//        try {
+//            Client authenticatedClient = clientService.login(client.getUsername(), client.getPassword());
+//            return new ResponseEntity<>(authenticatedClient, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
 
 }
