@@ -24,6 +24,7 @@ public class WalletServiceTest {
     private String username = "testUser";
     private double amount = 100.0;
     private Currency currency = Currency.INR;
+    private  long   userId = 1;
 
     @BeforeEach
     void setUp() {
@@ -37,9 +38,10 @@ public class WalletServiceTest {
     @Test
     void testDepositExpectWalletUpdatedSuccessfully() {
         when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
+        when(clientRepository.findClientByIdLike(userId)).thenReturn(Optional.of(client));
         when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
 
-        walletService.deposit(username, amount, currency);
+        walletService.deposit(userId, amount, currency);
 
         verify(walletRepository).save(wallet);
         assertTrue(wallet.checkBalance(amount));
@@ -49,9 +51,10 @@ public class WalletServiceTest {
     void testWithdrawExpectWalletUpdatedSuccessfully() {
         wallet.deposit(200.0);
         when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
+        when(clientRepository.findClientByIdLike(userId)).thenReturn(Optional.of(client));
         when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
 
-        walletService.withdraw(username, amount, currency);
+        walletService.withdraw(userId, amount, currency);
 
         verify(walletRepository).save(wallet);
         assertTrue(wallet.checkBalance(200.0-amount));
@@ -63,23 +66,25 @@ public class WalletServiceTest {
         Client otherClient = new Client("otherUser", "password");
         Wallet otherWallet = new Wallet(otherClient, currency);
         when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
+        when(clientRepository.findClientByIdLike(userId)).thenReturn(Optional.of(client));
         when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
-        assertThrows(WalletNotFoundException.class, () -> walletService.deposit("thirdUser", amount, currency));
+        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(2, amount, currency));
     }
 
     @Test
     void testWalletNotFoundExpectWalletNotFoundException() {
         when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
+        when(clientRepository.findClientByIdLike(userId)).thenReturn(Optional.of(client));
         when(walletRepository.findByClient(client)).thenReturn(Optional.empty());
 
-        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(username, amount, currency));
+        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(userId, amount, currency));
     }
 
     @Test
     void testClientNotFoundExpectWalletNotFoundException() {
         when(clientRepository.findByUsername(username)).thenReturn(Optional.empty());
-
-        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(username, amount, currency));
+        when(clientRepository.findClientByIdLike(userId)).thenReturn(Optional.of(client));
+        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(userId, amount, currency));
     }
 
 

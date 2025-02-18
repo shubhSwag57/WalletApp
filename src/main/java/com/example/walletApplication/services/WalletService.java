@@ -7,6 +7,7 @@
     import com.example.walletApplication.entity.Wallet;
     import com.example.walletApplication.repository.ClientRepository;
     import com.example.walletApplication.repository.WalletRepository;
+    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
 
     @Service
@@ -15,27 +16,28 @@
 
         private ClientRepository clientRepository;
 
+        @Autowired
         public WalletService(ClientRepository clientRepository, WalletRepository walletRepository) {
             this.clientRepository = clientRepository;
             this.walletRepository = walletRepository;
         }
 
-        public void deposit(String username, double amount, Currency currency){
-            Wallet wallet = fetchWalletOfClient(username);
+        public void deposit(long userId, double amount, Currency currency){
+            Wallet wallet = fetchWalletOfClient(userId);
             double amountInINR = currency.convertToINR(amount);
             wallet.deposit(amountInINR);
             walletRepository.save(wallet);
         }
 
-        public void withdraw(String username, double amount,Currency currency){
-            Wallet wallet = fetchWalletOfClient(username);
+        public void withdraw(long userId, double amount,Currency currency){
+            Wallet wallet = fetchWalletOfClient(userId);
             double amountInINR = currency.convertToINR(amount);
             wallet.withdraw(amountInINR);
             walletRepository.save(wallet);
         }
 
-        private Wallet fetchWalletOfClient(String username) {
-            Client client = clientRepository.findByUsername(username)
+        private Wallet fetchWalletOfClient(long userId) {
+            Client client = clientRepository.findClientByIdLike( userId)
                     .orElseThrow(() -> new WalletNotFoundException("Client not found"));
             Wallet wallet = walletRepository.findByClient(client)
                     .orElseThrow(() -> new WalletNotFoundException("Wallet not found for client"));

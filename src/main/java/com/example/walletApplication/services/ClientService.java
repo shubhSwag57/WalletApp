@@ -1,5 +1,6 @@
 package com.example.walletApplication.services;
 
+import com.example.walletApplication.DTO.ClientRequest;
 import com.example.walletApplication.Exceptions.InvalidCredentialsException;
 import com.example.walletApplication.Exceptions.UserAlreadyExistsException;
 import com.example.walletApplication.entity.Wallet;
@@ -9,7 +10,9 @@ import com.example.walletApplication.messages.Messages;
 import com.example.walletApplication.repository.ClientRepository;
 import com.example.walletApplication.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -17,30 +20,53 @@ import java.util.List;
 @Service
 public class ClientService  {
 
+
     private ClientRepository clientRepository;
     private WalletRepository walletRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public ClientService(ClientRepository clientRepository, WalletRepository walletRepository) {
+    @Autowired
+    public ClientService(ClientRepository clientRepository, WalletRepository walletRepository,PasswordEncoder passwordEncoder) {
         this.clientRepository = clientRepository;
         this.walletRepository = walletRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
-    public void register(Client client){
+    public void register(ClientRequest clientRequest){
+        if(clientRequest != null){
+            System.out.println(clientRequest.getUsername()+ " "+ clientRequest.getPassword());
+        }
+        assert clientRequest != null;
+        String encodedPassword = passwordEncoder.encode(clientRequest.getPassword());
+        System.out.println(encodedPassword);
+        Client client = new Client(clientRequest.getUsername(),encodedPassword);
+        System.out.println("Checking existing client: ");
+
         List<Client> clients = clientRepository.findAll();
+
         for(Client c : clients) {
-            if(c.equals(client)) {
+            if(c.isSameUserName(clientRequest.getUsername())) {
                 throw new UserAlreadyExistsException(Messages.USER_ALREADY_EXISTS);
             }
         }
+
         clientRepository.save(client);
         Wallet wallet = new Wallet(client, Currency.INR);
         walletRepository.save(wallet);
     }
 
-    public Client login(String username, String password){
+    public Client login(ClientRequest clientRequest){
+        if(clientRequest != null){
+            System.out.println(clientRequest.getUsername()+ " "+ clientRequest.getPassword());
+        }
+        else {
+            System.out.println("Error in the login");
+        }
+        String username = clientRequest.getUsername();
+        String password = clientRequest.getPassword();
         return clientRepository.findByUsername(username)
-                .filter(client -> client.isValidPassword(password))
+                .filter(client -> client.isValidPassword(password,passwordEncoder))
                 .orElseThrow(() -> new InvalidCredentialsException(Messages.INVALID_CREDENTIALS));
     }
 

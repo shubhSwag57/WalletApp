@@ -3,23 +3,29 @@ package com.example.walletApplication.entity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Collections;
 
 @Entity
-@Table(name = "USERDB")
+@Table(name = "\"user\"")
 @EqualsAndHashCode(callSuper = false)
 public class Client extends User {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "username")
     private  String username;
+    @Column(name = "password")
     private  String password;
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private  Wallet wallet;
 
     public Client(String username, String password){
         super(username,password,Collections.emptyList());
+        this.username = username;
         this.password = password;
     }
 
@@ -33,8 +39,14 @@ public class Client extends User {
         super("defaultUsername", "defaultPassword", Collections.emptyList());
     }
 
-    public boolean isValidPassword(String password){
-        return this.password.equals(password);
+    public boolean isValidPassword(String password, PasswordEncoder passwordEncoder){
+        Boolean res  = passwordEncoder.matches(password, this.password);
+        System.out.println(res);
+        return res;
+
+    }
+    public boolean isSameUserName(String username){
+        return this.username.equals(username);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.walletApplication.services;
 
+import com.example.walletApplication.DTO.ClientRequest;
 import com.example.walletApplication.Exceptions.InvalidCredentialsException;
 import com.example.walletApplication.Exceptions.UserAlreadyExistsException;
 import com.example.walletApplication.entity.Client;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +24,13 @@ public class ClientServiceTest {
     private ClientRepository clientRepository;
     private WalletRepository walletRepository;
     private ClientService clientService;
-
+    private PasswordEncoder passwordEncoder;
     @BeforeEach
     void setUp() {
         clientRepository = mock(ClientRepository.class);
         walletRepository = mock(WalletRepository.class);
-        clientService = new ClientService(clientRepository, walletRepository);
+        passwordEncoder = mock(PasswordEncoder.class);
+        clientService = new ClientService(clientRepository, walletRepository,passwordEncoder);
     }
 
 
@@ -35,9 +38,13 @@ public class ClientServiceTest {
     public void testRegisterNewUserExpectRegisteredSuccessfully() {
         String username = "testUser";
         String password = "testPassword";
-        Client client = new Client(username,password);
-        clientService.register(client);
-        verify(clientRepository).save(client);
+        ClientRequest clientRequest = new ClientRequest(username, password);
+
+        when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
+
+        clientService.register(clientRequest);
+
+        verify(clientRepository).save(any(Client.class));
         verify(walletRepository).save(any(Wallet.class));
     }
 
@@ -45,30 +52,43 @@ public class ClientServiceTest {
     public void testExistingUserExpectUserAlreadyExists() {
         String username = "testUser";
         String password = "testPassword";
-        Client client = new Client(username, password);
-        when(clientRepository.findAll()).thenReturn(List.of(client));
+        String encodedPassword = "encodedTestPassword";
 
-        assertThrows(UserAlreadyExistsException.class, () -> clientService.register(client));
+        when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
+
+        Client existingClient = new Client(username, encodedPassword);
+        when(clientRepository.findAll()).thenReturn(List.of(existingClient));
+
+        ClientRequest clientReq = new ClientRequest(username, password);
+
+        assertThrows(UserAlreadyExistsException.class, () -> clientService.register(clientReq));
     }
+
 
     @Test
     public void testLoginAfterRegisteringUserWithValidCredentials(){
         String username = "testUser";
         String password = "testPassword";
-        Client client = new Client(username,password);
+        Client client = new Client(username, "encodedPassword");
+        ClientRequest clientRequest = new ClientRequest(username, password);
+
         when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
+        when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(true);
 
-        Client loggedIn = clientService.login(username,password);
+        Client loggedIn = clientService.login(clientRequest);
 
-        assertEquals(client,loggedIn);
+        assertEquals(client, loggedIn);
     }
 
     @Test
     public void testLoginWithInvalidCredentials(){
         String username = "testUser";
         String password = "testPassword";
+        ClientRequest clientRequest = new ClientRequest(username, password);
+
         when(clientRepository.findByUsername(username)).thenReturn(Optional.empty());
-        assertThrows(InvalidCredentialsException.class, ()->clientService.login(username,password));
+
+        assertThrows(InvalidCredentialsException.class, () -> clientService.login(clientRequest));
 
     }
 
