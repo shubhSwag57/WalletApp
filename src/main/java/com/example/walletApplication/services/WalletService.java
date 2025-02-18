@@ -37,7 +37,7 @@
         }
 
         private Wallet fetchWalletOfClient(long userId) {
-            Client client = clientRepository.findClientByIdLike( userId)
+            Client client = clientRepository.findClientById( userId)
                     .orElseThrow(() -> new WalletNotFoundException("Client not found"));
             Wallet wallet = walletRepository.findByClient(client)
                     .orElseThrow(() -> new WalletNotFoundException("Wallet not found for client"));
@@ -47,4 +47,8 @@
             return wallet;
         }
 
+        public void transferMoney(long clientId, Long receiverId, Double amount, Currency currency) {
+            withdraw(clientId,amount,currency);
+            deposit(receiverId,amount,currency);
+        }
     }

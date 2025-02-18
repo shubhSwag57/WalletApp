@@ -9,5 +9,6 @@ public class Messages {
     public static final String WITHDRAW_SUCCESSFULLY = "Withdraw Successfully";
     public static final String WITHDRAW_FAILED= "Withdraw Failed";
     public static final String DEPOSITED_FAILED = "Deposit Failed";
+    public static final String TRANSFER_SUCCESSFULLY = "Transfer Successfully";
 
 }

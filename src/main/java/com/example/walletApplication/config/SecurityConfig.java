@@ -24,7 +24,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/clients/register").permitAll()
                         .requestMatchers("/clients/login").permitAll()
-                        .requestMatchers("/wallet-management/**").permitAll() // Allow access to all wallet endpoints
+                        .requestMatchers("/wallet-management/**").permitAll()
+                        .requestMatchers("/clients/{clientId}/wallets/**").permitAll()// Allow access to all wallet endpoints
                         // Allow public access to registration
                         .anyRequest().authenticated() // Secure all other endpoints
                 )

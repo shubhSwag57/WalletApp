@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WalletTransactionControllerTests {
+public class WalletControllerTests {
 
     private MockMvc mockMvc;
 
@@ -32,7 +32,7 @@ public class WalletTransactionControllerTests {
     private ClientService clientService;
 
     @InjectMocks
-    private WalletTransactionController walletTransactionController;
+    private WalletController walletController;
 
     private String username = "testUser";
     private  long userId = 1;
@@ -41,7 +41,7 @@ public class WalletTransactionControllerTests {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(walletTransactionController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(walletController).build();
     }
 
     @Test
