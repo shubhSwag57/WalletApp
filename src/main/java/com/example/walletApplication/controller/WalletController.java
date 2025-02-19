@@ -20,28 +20,28 @@ public class WalletController {
     public WalletController(WalletService walletService){
         this.walletService = walletService;
     }
-    @PostMapping("/deposit-transactions")
-    public ResponseEntity<String> deposit(@PathVariable long clientId, @RequestBody TransactionRequest transactionRequest) {
-        try {
-            walletService.deposit(clientId, transactionRequest.getAmount(), transactionRequest.getCurrency());
-            return new ResponseEntity<>(Messages.DEPOSITED_SUCCESSFULLY, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/withdraw-transactions")
-    public ResponseEntity<String> withdraw(@PathVariable long clientId, @RequestBody TransactionRequest transactionRequest) {
-        try {
-            walletService.withdraw(clientId, transactionRequest.getAmount(), transactionRequest.getCurrency());
-            return new ResponseEntity<>(Messages.WITHDRAW_SUCCESSFULLY, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PostMapping("/deposit-transactions")
+//    public ResponseEntity<String> deposit(@PathVariable long clientId, @RequestBody TransactionRequest transactionRequest) {
+//        try {
+//            walletService.deposit(clientId, transactionRequest.getAmount(), transactionRequest.getCurrency());
+//            return new ResponseEntity<>(Messages.DEPOSITED_SUCCESSFULLY, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+//
+//    @PostMapping("/withdraw-transactions")
+//    public ResponseEntity<String> withdraw(@PathVariable long clientId, @RequestBody TransactionRequest transactionRequest) {
+//        try {
+//            walletService.withdraw(clientId, transactionRequest.getAmount(), transactionRequest.getCurrency());
+//            return new ResponseEntity<>(Messages.WITHDRAW_SUCCESSFULLY, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
     @PostMapping("/transactions")
-    public ResponseEntity<String> Transaction(
+    public ResponseEntity<String> transaction(
             @PathVariable long clientId,
             @RequestParam TransactionType type, // Using enum as query parameter
             @RequestBody TransactionRequest transactionRequest) {
@@ -59,9 +59,9 @@ public class WalletController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    // or it could be /transfers
     @PostMapping("/transfer-money")
-    public ResponseEntity<String> Transfer(
+    public ResponseEntity<String> transfer(
             @PathVariable long clientId,
             @RequestBody TransferRequest transferRequest){
         try{

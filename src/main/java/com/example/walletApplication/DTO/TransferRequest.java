@@ -1,42 +1,22 @@
 package com.example.walletApplication.DTO;
 
 import com.example.walletApplication.enums.Currency;
+import lombok.Getter;
+import lombok.Setter;
 
-public class TransferRequest {
+public class TransferRequest extends  TransactionRequest{
+    @Setter
+    @Getter
     private Long receiverId;
     private Double amount;
     private Currency currency;
     // Constructors, getters, setters
-    public TransferRequest() {}
 
     public TransferRequest(Long receiverId, Double amount,Currency currency) {
-        this.receiverId = receiverId;
-        this.amount = amount;
-        this.currency = currency;
-    }
+        super(amount,currency);
 
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
-    public Long getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(Long receiverId) {
         this.receiverId = receiverId;
     }
 
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
 
 }

@@ -6,6 +6,12 @@ public class TransactionRequest {
     private double amount;
     private Currency currency;
 
+    public TransactionRequest(Double amount, Currency currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+
     // Getters and Setters
     public double getAmount() {
         return amount;

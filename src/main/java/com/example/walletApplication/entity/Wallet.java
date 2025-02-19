@@ -54,4 +54,6 @@ public class Wallet {
     public boolean checkClient(Client client){
         return this.client.equals(client);
     }
+
+
 }
