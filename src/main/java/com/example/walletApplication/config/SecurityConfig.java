@@ -22,13 +22,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection for APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/clients/register").permitAll()
-                        .requestMatchers("/clients/login").permitAll()
-                        .requestMatchers("/wallet-management/**").permitAll()
-                        .requestMatchers("/clients/{clientId}/wallets/**").permitAll()
-                        .requestMatchers("/clients/{clientId}/**").permitAll()// Allow access to all wallet endpoints
-                        // Allow public access to registration
-                        .anyRequest().authenticated() // Secure all other endpoints
+                                .requestMatchers("/clients/registerUser").permitAll()
+                                .requestMatchers("/clients/loginUser").permitAll()
+                                .requestMatchers("/wallet-management/**").permitAll()
+                                .requestMatchers("/clients/{clientId}/wallets/**").permitAll()
+                                .requestMatchers("/clients/{clientId}/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+// Allow access to all wallet endpoints
+                                // Allow public access to registration
+                                .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .httpBasic(withDefaults()); // Enable basic authentication
 

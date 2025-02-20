@@ -126,3 +126,107 @@
 //                .andExpect(content().string(Messages.TRANSFER_SUCCESSFULLY));
 //    }
 //}
+
+package com.example.walletApplication.controller;
+
+import com.example.walletApplication.DTO.TransactionRequest;
+import com.example.walletApplication.DTO.TransactionResponse;
+import com.example.walletApplication.enums.Currency;
+import com.example.walletApplication.enums.TransactionType;
+import com.example.walletApplication.messages.Messages;
+import com.example.walletApplication.services.TransactionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@ExtendWith(MockitoExtension.class)
+public class TransactionControllerTests {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private TransactionService transactionService;
+
+    @InjectMocks
+    private TransactionController transactionController;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final long clientId = 1L;
+    private final long transId = 1L;
+    private final double amount = 100.0;
+    private final Currency currency = Currency.INR;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(transactionController).build();
+    }
+
+    @Test
+    void testGetWalletHistorySuccess() throws Exception {
+        List<TransactionResponse> history = Collections.emptyList();
+        when(transactionService.walletHistory(clientId)).thenReturn(history);
+
+        mockMvc.perform(get("/clients/{clientId}/wallets/transactions", clientId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void testGetWalletTransactionHistoryByIdSuccess() throws Exception {
+
+        TransactionResponse history = new TransactionResponse(12L, TransactionType.WITHDRAW, 100.0, Currency.INR, LocalDateTime.now());
+        when(transactionService.walletTransactionHistoryById(clientId,transId)).thenReturn(history);
+
+        mockMvc.perform(get("/clients/{clientId}/wallets/transactions/{transId}", clientId, transId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty());
+    }
+
+    @Test
+    void testCreateTransactionSuccess() throws Exception {
+        TransactionRequest transactionRequest = new TransactionRequest();
+        transactionRequest.setAmount(amount);
+        transactionRequest.setCurrency(currency);
+        transactionRequest.setType(TransactionType.DEPOSIT);
+
+        doNothing().when(transactionService).transaction(clientId, transactionRequest);
+
+        mockMvc.perform(post("/clients/{clientId}/wallets/transactions", clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Messages.TRANSACTION_SUCCESSFULLY));
+    }
+
+    @Test
+    void testCreateTransactionFailure() throws Exception {
+        TransactionRequest transactionRequest = new TransactionRequest();
+        transactionRequest.setAmount(amount);
+        transactionRequest.setCurrency(currency);
+        transactionRequest.setType(TransactionType.WITHDRAW);
+
+        doThrow(new RuntimeException(Messages.TRANSACTION_FAILED)).when(transactionService).transaction(clientId, transactionRequest);
+
+        mockMvc.perform(post("/clients/{clientId}/wallets/transactions", clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Messages.TRANSACTION_FAILED));
+    }
+}

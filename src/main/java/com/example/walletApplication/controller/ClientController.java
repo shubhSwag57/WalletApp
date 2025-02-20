@@ -4,6 +4,8 @@ import com.example.walletApplication.DTO.ClientRequest;
 import com.example.walletApplication.entity.Client;
 import com.example.walletApplication.messages.Messages;
 import com.example.walletApplication.services.ClientService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class ClientController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registerClient")
     public ResponseEntity<String> register(@RequestBody ClientRequest clientRequest) {
         try {
             clientService.register(clientRequest);
@@ -36,10 +38,9 @@ public class ClientController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/loginClient")
     public ResponseEntity<Client> login(@RequestBody ClientRequest clientRequest) {
         try {
-            System.out.println("Coming here");
             Client client = clientService.login(clientRequest);
             return new ResponseEntity<>(client, HttpStatus.OK);
         } catch (Exception e) {
