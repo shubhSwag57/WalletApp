@@ -34,15 +34,11 @@ public class ClientService  {
 
 
     public void register(ClientRequest clientRequest){
-        if(clientRequest != null){
-            System.out.println(clientRequest.getUsername()+ " "+ clientRequest.getPassword());
-        }
+
         assert clientRequest != null;
         String encodedPassword = passwordEncoder.encode(clientRequest.getPassword());
         System.out.println(encodedPassword);
         Client client = new Client(clientRequest.getUsername(),encodedPassword);
-        System.out.println("Checking existing client: ");
-
         List<Client> clients = clientRepository.findAll();
 
         for(Client c : clients) {
@@ -57,12 +53,7 @@ public class ClientService  {
     }
 
     public Client login(ClientRequest clientRequest){
-        if(clientRequest != null){
-            System.out.println(clientRequest.getUsername()+ " "+ clientRequest.getPassword());
-        }
-        else {
-            System.out.println("Error in the login");
-        }
+
         String username = clientRequest.getUsername();
         String password = clientRequest.getPassword();
         return clientRepository.findByUsername(username)

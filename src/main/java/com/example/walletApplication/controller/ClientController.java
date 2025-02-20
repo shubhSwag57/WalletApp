@@ -22,11 +22,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping()
-    public ResponseEntity<String> userdata(){
-        String res = "setup";
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+
 
     @PostMapping("/registerClient")
     public ResponseEntity<String> register(@RequestBody ClientRequest clientRequest) {
@@ -39,12 +35,12 @@ public class ClientController {
     }
 
     @PostMapping("/loginClient")
-    public ResponseEntity<Client> login(@RequestBody ClientRequest clientRequest) {
+    public ResponseEntity<String> login(@RequestBody ClientRequest clientRequest) {
         try {
             Client client = clientService.login(clientRequest);
-            return new ResponseEntity<>(client, HttpStatus.OK);
+            return new ResponseEntity<>(Messages.USER_LOGGEDIN, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 

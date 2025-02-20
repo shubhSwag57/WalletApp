@@ -48,10 +48,8 @@ public class ClientControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize the mock environment for each test
         mockMvc = MockMvcBuilders.standaloneSetup(clientController).build();
 
-        // Sample client object to use in tests
         clientRequest = new ClientRequest("testUser", "testPassword");
     }
 
@@ -82,7 +80,7 @@ public class ClientControllerTest {
 //        String username = "testUser";
 //        ClientRequest newClient = new ClientRequest(username,password);
 //        Client client = new Client(username,password);
-//        when(clientService.login(newClient)).thenReturn(client);
+//        doNothing().when(clientService).login(any(ClientRequest.class));
 //        when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(true);
 //        mockMvc.perform(post(USER_LOGIN_URL)
 //                        .contentType(MediaType.APPLICATION_JSON)

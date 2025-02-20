@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "\"client\"")
 @EqualsAndHashCode(callSuper = false)
 public class Client extends User {
 
@@ -58,8 +58,4 @@ public class Client extends User {
                 password.equals(client.password);
     }
 
-
-//    public double getBalance() {
-//        return wallet.checkBalance();
-//    }
 }

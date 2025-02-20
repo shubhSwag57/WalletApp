@@ -14,4 +14,5 @@ public class Messages {
     public static final String TRANSACTION_FAILED = "Transaction Failed";
     public static final String INVALID_TRANSACTIONID = "Invalid Transaction id";
 
+    public static final String USER_LOGGEDIN = "User logged in Successfully";
 }
