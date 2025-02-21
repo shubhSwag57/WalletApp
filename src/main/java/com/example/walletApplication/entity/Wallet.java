@@ -1,10 +1,12 @@
 package com.example.walletApplication.entity;
 
-import com.example.walletApplication.Exceptions.AmountShouldBePositiveException;
-import com.example.walletApplication.Exceptions.NotEnoughMoneyInAccountException;
+import com.example.walletApplication.exception.AmountShouldBePositiveException;
+import com.example.walletApplication.exception.NotEnoughMoneyInAccountException;
 import com.example.walletApplication.enums.Currency;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 @Entity
@@ -12,6 +14,8 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Getter
+    @Setter
     private double balance;
     @Enumerated(EnumType.STRING)
     private Currency currency;

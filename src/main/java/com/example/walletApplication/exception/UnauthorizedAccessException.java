@@ -1,4 +1,4 @@
-package com.example.walletApplication.Exceptions;
+package com.example.walletApplication.exception;
 
 public class UnauthorizedAccessException extends RuntimeException {
     public UnauthorizedAccessException(String message) {

@@ -1,4 +1,4 @@
-package com.example.walletApplication.Exceptions;
+package com.example.walletApplication.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException(String message) {

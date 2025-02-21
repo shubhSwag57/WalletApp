@@ -4,7 +4,6 @@ import com.example.walletApplication.DTO.ClientRequest;
 import com.example.walletApplication.messages.Messages;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.example.walletApplication.Exceptions.UserAlreadyExistsException;
 import com.example.walletApplication.entity.Client;
 import com.example.walletApplication.services.ClientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;

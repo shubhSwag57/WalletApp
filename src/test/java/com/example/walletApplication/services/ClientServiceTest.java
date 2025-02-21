@@ -1,8 +1,8 @@
 package com.example.walletApplication.services;
 
 import com.example.walletApplication.DTO.ClientRequest;
-import com.example.walletApplication.Exceptions.InvalidCredentialsException;
-import com.example.walletApplication.Exceptions.UserAlreadyExistsException;
+import com.example.walletApplication.exception.InvalidCredentialsException;
+import com.example.walletApplication.exception.UserAlreadyExistsException;
 import com.example.walletApplication.entity.Client;
 import com.example.walletApplication.entity.Wallet;
 import com.example.walletApplication.repository.ClientRepository;

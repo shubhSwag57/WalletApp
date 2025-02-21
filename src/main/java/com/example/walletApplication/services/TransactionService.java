@@ -2,9 +2,10 @@
 
     import com.example.walletApplication.DTO.TransactionRequest;
     import com.example.walletApplication.DTO.TransactionResponse;
-    import com.example.walletApplication.Exceptions.TransactionIdNotFoundException;
-    import com.example.walletApplication.Exceptions.UnauthorizedAccessException;
-    import com.example.walletApplication.Exceptions.WalletNotFoundException;
+    import com.example.walletApplication.exception.InvalidAmountException;
+    import com.example.walletApplication.exception.TransactionIdNotFoundException;
+    import com.example.walletApplication.exception.UnauthorizedAccessException;
+    import com.example.walletApplication.exception.WalletNotFoundException;
     import com.example.walletApplication.entity.Client;
     import com.example.walletApplication.entity.Transaction;
     import com.example.walletApplication.entity.TransferTransaction;
@@ -43,18 +44,18 @@
 
         private Wallet fetchWalletOfClient(long userId) {
             Client client = clientRepository.findClientById( userId)
-                    .orElseThrow(() -> new WalletNotFoundException("Client not found"));
+                    .orElseThrow(() -> new WalletNotFoundException("Client with ID " + userId + " not found"));
             Wallet wallet = walletRepository.findByClient(client)
-                    .orElseThrow(() -> new WalletNotFoundException("Wallet not found for client"));
+                    .orElseThrow(() -> new WalletNotFoundException("Wallet not found for Client ID " + userId));
             if (!wallet.checkClient(client)) {
-                throw new UnauthorizedAccessException("Unauthorized access to wallet");
+                throw new UnauthorizedAccessException("Unauthorized access to wallet of Client ID " + userId);
             }
             return wallet;
         }
 
 
 
-        public List<TransactionResponse> walletHistory(Long userId) {
+        public List<TransactionResponse> walletTransactionHistory(Long userId) {
             Wallet wallet = fetchWalletOfClient(userId);
             List<TransactionResponse> depositsAndWithdrawals = transactionRepository.findDepositsAndWithdrawals(wallet);
             List<TransactionResponse> transferTransactions = transactionRepository.findWalletTransferTransHistory(wallet);
@@ -79,7 +80,10 @@
 
         }
 
-        public void transaction(long clientId, TransactionRequest transactionRequest) {
+        public void transaction(long clientId, @NotNull TransactionRequest transactionRequest) {
+            if (transactionRequest.getAmount() <= 0) {
+                throw new InvalidAmountException(Messages.AMOUNT_SHOULD_BE_POSITIVE);
+            }
             Wallet wallet = fetchWalletOfClient(clientId);
             TransactionType type = transactionRequest.getType();
             Currency currency = transactionRequest.getCurrency();
@@ -100,9 +104,6 @@
         private void transferAmountToReceiver(@NotNull TransactionRequest transactionRequest, @NotNull Wallet wallet, double amountInINR, Currency currency) {
             long receiverId = transactionRequest.getReceiverId();
             Wallet reciverWallet = fetchWalletOfClient(receiverId);
-            if(reciverWallet ==null){
-                throw  new WalletNotFoundException("Wallet not found");
-            }
             wallet.withdraw(amountInINR);
             walletRepository.save(wallet);
             reciverWallet.deposit(amountInINR);
@@ -113,17 +114,18 @@
             transferTransactionRepository.save(transferTransaction);
         }
 
-        private void withdrawAmount(Wallet wallet, double amountInINR, Currency currency) {
+        private void withdrawAmount(@NotNull Wallet wallet, double amountInINR, Currency currency) {
             wallet.withdraw(amountInINR);
             walletRepository.save(wallet);
             Transaction transaction = new Transaction(wallet, amountInINR, currency, TransactionType.WITHDRAW);
             transactionRepository.save(transaction);
         }
 
-        private void depositAmount(Wallet wallet, double amountInINR, Currency currency) {
+        private void depositAmount(@NotNull Wallet wallet, double amountInINR, Currency currency) {
             wallet.deposit(amountInINR);
             walletRepository.save(wallet);
             Transaction transaction = new Transaction(wallet, amountInINR, currency, TransactionType.DEPOSIT);
             transactionRepository.save(transaction);
         }
+
     }

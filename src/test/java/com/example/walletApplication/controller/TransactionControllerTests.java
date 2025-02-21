@@ -131,6 +131,8 @@ package com.example.walletApplication.controller;
 
 import com.example.walletApplication.DTO.TransactionRequest;
 import com.example.walletApplication.DTO.TransactionResponse;
+import com.example.walletApplication.exception.InvalidAmountException;
+import com.example.walletApplication.exception.WalletNotFoundException;
 import com.example.walletApplication.enums.Currency;
 import com.example.walletApplication.enums.TransactionType;
 import com.example.walletApplication.messages.Messages;
@@ -178,13 +180,36 @@ public class TransactionControllerTests {
     }
 
     @Test
-    void testGetWalletHistorySuccess() throws Exception {
+    void testGetWalletTransactionHistorySuccessWithEmptyTransactions() throws Exception {
         List<TransactionResponse> history = Collections.emptyList();
-        when(transactionService.walletHistory(clientId)).thenReturn(history);
+        when(transactionService.walletTransactionHistory(clientId)).thenReturn(history);
 
         mockMvc.perform(get("/clients/{clientId}/wallets/transactions", clientId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void testGetWalletTransactionHistorySuccess() throws Exception {
+        List<TransactionResponse> history = List.of(
+                new TransactionResponse(1L, TransactionType.DEPOSIT, 200.0, Currency.USD, LocalDateTime.now()),
+                new TransactionResponse(2L, TransactionType.WITHDRAW, 50.0, Currency.EUR, LocalDateTime.now())
+        );
+        when(transactionService.walletTransactionHistory(clientId)).thenReturn(history);
+
+        mockMvc.perform(get("/clients/{clientId}/wallets/transactions", clientId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+
+    }
+
+    @Test
+    void testGetWalletTransactionHistoryNotFound() throws Exception {
+        when(transactionService.walletTransactionHistory(clientId)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/clients/{clientId}/wallets/transactions", clientId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test
@@ -229,4 +254,42 @@ public class TransactionControllerTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(Messages.TRANSACTION_FAILED));
     }
+
+    @Test
+    void testCreateTransactionForUnauthorizedClient() throws Exception {
+        TransactionRequest transactionRequest = new TransactionRequest(amount, currency, TransactionType.TRANSFER);
+
+        doThrow(new WalletNotFoundException(Messages.WALLET_NOT_FOUND)).when(transactionService).transaction(clientId, transactionRequest);
+
+        mockMvc.perform(post("/clients/{clientId}/wallets/transactions", clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Messages.WALLET_NOT_FOUND));
+    }
+
+    @Test
+    void testCreateTransactionInvalidCurrency() throws Exception {
+        String invalidRequest = "{ \"amount\": 100.0, \"currency\": \"INVALID\", \"type\": \"DEPOSIT\" }";
+
+        mockMvc.perform(post("/clients/{clientId}/wallets/transactions", clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateTransactionInvalidAmount() throws Exception {
+        TransactionRequest transactionRequest = new TransactionRequest(-50.0, currency, TransactionType.DEPOSIT);
+        doThrow(new InvalidAmountException(Messages.AMOUNT_SHOULD_BE_POSITIVE))
+                .when(transactionService).transaction(eq(clientId), any(TransactionRequest.class));
+
+        mockMvc.perform(post("/clients/{clientId}/wallets/transactions", clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Messages.AMOUNT_SHOULD_BE_POSITIVE));
+    }
+
+
 }

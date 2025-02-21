@@ -18,15 +18,15 @@ public class TransferTransaction {
     @OneToOne
     @JoinColumn(name = "transaction_id", nullable = false, unique = true)
     @Getter
-    private Transaction transaction; // Reference to WalletTransaction
+    private Transaction transaction;
 
     @ManyToOne
     @Getter
-    private Wallet senderWallet; // The wallet that sent the money
+    private Wallet senderWallet;
 
     @ManyToOne
     @Getter
-    private Wallet receiverWallet; // The wallet that received the money
+    private Wallet receiverWallet;
 
     public TransferTransaction(Transaction transaction, Wallet senderWallet, Wallet receiverWallet) {
         this.transaction = transaction;
@@ -34,10 +34,5 @@ public class TransferTransaction {
         this.receiverWallet = receiverWallet;
     }
 
-
-
-    public Long getTransactionID() {
-        return transaction.getTransactionId();
-    }
 }
 

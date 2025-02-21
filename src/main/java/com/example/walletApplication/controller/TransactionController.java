@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
-@OpenAPIDefinition(info = @Info(title = "Wallet API", version = "1.0", description = "API for Wallet Management"))
+@OpenAPIDefinition(info = @Info(title = Messages.API_NAME, version = "1.0", description = Messages.API_NAME))
 
 @RequestMapping("/clients/{clientId}/wallets/transactions")
 public class TransactionController {
@@ -30,20 +30,20 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
-
-    @Operation(summary = "Get wallet transaction history", description = "Fetches the transaction history for a specific client.")
+    @Operation(summary = Messages.GET_WALLET_HISTORY, description = Messages.GET_WALLET_HISTORY_DESC)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction history fetched successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid clientId provided", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Transaction history not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = Messages.TRANSACTION_HISTORY_FETCH_SUCCESSFULLY),
+            @ApiResponse(responseCode = "400", description = Messages.INVALID_CREDENTIALS, content = @Content),
+            @ApiResponse(responseCode = "404", description = Messages.TRANSACTION_HISTORY_NOT_FOUND, content = @Content)
     })
     @GetMapping("")
-    public ResponseEntity<List<TransactionResponse>> getWalletHistory(@PathVariable Long clientId) {
-        List<TransactionResponse> transactionHistory = transactionService.walletHistory(clientId);
+    public ResponseEntity<List<TransactionResponse>> getWalletTransactionHistory(@PathVariable Long clientId) {
+        List<TransactionResponse> transactionHistory = transactionService.walletTransactionHistory(clientId);
         return ResponseEntity.ok(transactionHistory);
     }
 
-    @Operation(summary = "Get transaction history by ID", description = "Fetches a specific transaction's history for a client.")
+
+    @Operation(summary = Messages.GET_WALLET_HISTORY_BY_ID)
     @GetMapping("/{transId}")
     public ResponseEntity<TransactionResponse> getWalletTransactionHistoryById(
             @PathVariable Long clientId, @PathVariable Long transId) {
@@ -51,7 +51,7 @@ public class TransactionController {
         return ResponseEntity.ok(history);
     }
 
-    @Operation(summary = "Create a new transaction", description = "Records a new transaction for the client.")
+    @Operation(summary = Messages.CREATE_NEW_TRANSACTION)
     @PostMapping("")
     public ResponseEntity<String> createTransaction(
             @PathVariable long clientId,
@@ -63,5 +63,6 @@ public class TransactionController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
 }

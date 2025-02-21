@@ -1,4 +1,4 @@
-package com.example.walletApplication.Exceptions;
+package com.example.walletApplication.exception;
 
 public class WalletNotFoundException extends RuntimeException {
     public WalletNotFoundException(String message) {

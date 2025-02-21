@@ -1,180 +1,13 @@
 package com.example.walletApplication.services;
-//
-//import com.example.walletApplication.Exceptions.WalletNotFoundException;
-//import com.example.walletApplication.entity.Client;
-//import com.example.walletApplication.entity.Wallet;
-//import com.example.walletApplication.enums.Currency;
-//import com.example.walletApplication.repository.ClientRepository;
-//import com.example.walletApplication.repository.TransactionRepository;
-//import com.example.walletApplication.repository.TransferTransactionRepository;
-//import com.example.walletApplication.repository.WalletRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//public class WalletServiceTest {
-//
-//    private ClientRepository clientRepository;
-//    private WalletRepository walletRepository;
-//    private WalletService walletService;
-//    private Client client;
-//    private Wallet wallet;
-//    private String username = "testUser";
-//    private double amount = 100.0;
-//    private Currency currency = Currency.INR;
-//    private  long   userId = 1;
-//    private long senderId = 3;
-//    private long receiverId = 4;
-//    private Client senderClient;
-//    private Client receiverClient;
-//    private Wallet senderWallet;
-//    private Wallet receiverWallet;
-//    private String senderUsername = "senderUser";
-//    private String receiverUsername = "receiverUser";
-//    private TransactionRepository transactionRepository;
-//
-//    private TransferTransactionRepository transferTransactionRepository;
-//
-//
-//    @BeforeEach
-//    void setUp() {
-//        clientRepository = mock(ClientRepository.class);
-//        walletRepository = mock(WalletRepository.class);
-//        walletService = new WalletService(clientRepository, walletRepository,transactionRepository,transferTransactionRepository);
-//        client = new Client(username, "password");
-//        wallet = new Wallet(client, currency);
-//        senderClient = new Client(senderUsername, "password");
-//        receiverClient = new Client(receiverUsername, "password");
-//
-//        senderWallet = new Wallet(senderClient, currency);
-//        receiverWallet = new Wallet(receiverClient, currency);
-//    }
-//
-//    @Test
-//    void testDepositExpectWalletUpdatedSuccessfully() {
-//        when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
-//        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-//        when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
-//
-//        walletService.deposit(userId, amount, currency);
-//
-//        verify(walletRepository).save(wallet);
-//        assertTrue(wallet.checkBalance(amount));
-//    }
-//
-//    @Test
-//    void testWithdrawExpectWalletUpdatedSuccessfully() {
-//        wallet.deposit(200.0);
-//        when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
-//        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-//        when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
-//
-//        walletService.withdraw(userId, amount, currency);
-//
-//        verify(walletRepository).save(wallet);
-//        assertTrue(wallet.checkBalance(200.0-amount));
-//    }
-//
-//    @Test
-//    void testUnauthorizedAccessToWallet() {
-//        // Arrange
-//        Client otherClient = new Client("otherUser", "password");
-//        Wallet otherWallet = new Wallet(otherClient, currency);
-//        when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
-//        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-//        when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
-//        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(2, amount, currency));
-//    }
-//
-//    @Test
-//    void testWalletNotFoundExpectWalletNotFoundException() {
-//        when(clientRepository.findByUsername(username)).thenReturn(Optional.of(client));
-//        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-//        when(walletRepository.findByClient(client)).thenReturn(Optional.empty());
-//
-//        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(userId, amount, currency));
-//    }
-//
-//    @Test
-//    void testClientNotFoundExpectWalletNotFoundException() {
-//        when(clientRepository.findByUsername(username)).thenReturn(Optional.empty());
-//        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-//        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(userId, amount, currency));
-//    }
-//
-//    @Test
-//    void testTransferMoneyExpectWalletUpdatedSuccessfully() {
-//        // Setup mock behavior
-//        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
-//        when(clientRepository.findClientById(receiverId)).thenReturn(Optional.of(receiverClient));
-//        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
-//        when(walletRepository.findByClient(receiverClient)).thenReturn(Optional.of(receiverWallet));
-//
-//        senderWallet.deposit(200.0);  // Adding balance to sender's wallet
-//
-//        walletService.transferMoney(senderId, receiverId, amount, currency);
-//
-//        // Verify that the transfer occurs
-//        verify(walletRepository).save(senderWallet);   // Save the updated sender's wallet
-//        verify(walletRepository).save(receiverWallet); // Save the updated receiver's wallet
-//
-//        assertTrue(senderWallet.checkBalance(100.0));   // Sender's wallet balance should decrease by the transfer amount
-//        assertTrue(receiverWallet.checkBalance(100.0));  // Receiver's wallet balance should increase by the transfer amount
-//    }
-//
-//
-////    @Test
-////
-////    public void testDepositMoney(){
-////        WalletServiceImpl walletService = new WalletServiceImpl();
-////        User user = new User("test1","123456");
-////        String res = walletService.deposit(user,100);
-////        assertEquals("Deposited: 100.0, Total Balance: 100.0",res);
-////    }
-////
-////    @Test
-////    public void testWithdrawSufficientBalance(){
-////        WalletServiceImpl walletService = new WalletServiceImpl();
-////        User user = new User("test1","123456");
-////        String res = walletService.deposit(user,100);
-////        res = walletService.withdraw(user,50.0);
-////        assertEquals("Withdrawn: 50.0, Total Balance: 50.0",res);
-////    }
-//
-////    @Test
-////    public void testWithdrawInSufficientBalance(){
-////        WalletServiceImpl walletService = new WalletServiceImpl();
-////        User user = new User("test1","123456");
-////        String res = walletService.deposit(user,100);
-////        res = walletService.withdraw(user,50.0);
-////        assertEquals("Withdrawn: 50.0, Total Balance: 50.0",res);
-////        res = walletService.withdraw(user,100.0);
-////        assertEquals(Messages.INSUFFICIENT_BALANCE,res);
-////    }
-////
-////    @Test
-////    public void testGetBalance(){
-////        WalletServiceImpl walletService = new WalletServiceImpl();
-////        User user = new User("test1","123456");
-////        String res = walletService.deposit(user,100.0);
-////        res = walletService.getBalance(user);
-////        assertEquals("Total Balance: 100.0",res);
-////
-////
-////    }
-//
-//}
 
 import com.example.walletApplication.DTO.TransactionRequest;
-import com.example.walletApplication.enums.Currency;
-import com.example.walletApplication.enums.TransactionType;
-import com.example.walletApplication.Exceptions.WalletNotFoundException;
+import com.example.walletApplication.DTO.TransactionResponse;
+import com.example.walletApplication.exception.TransactionIdNotFoundException;
+import com.example.walletApplication.exception.WalletNotFoundException;
 import com.example.walletApplication.entity.Client;
 import com.example.walletApplication.entity.Wallet;
+import com.example.walletApplication.enums.Currency;
+import com.example.walletApplication.enums.TransactionType;
 import com.example.walletApplication.repository.ClientRepository;
 import com.example.walletApplication.repository.TransactionRepository;
 import com.example.walletApplication.repository.TransferTransactionRepository;
@@ -182,85 +15,163 @@ import com.example.walletApplication.repository.WalletRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class TransactionServiceTest {
-    private ClientRepository clientRepository;
+class TransactionServiceTest {
+    private TransactionService transactionService;
     private WalletRepository walletRepository;
+    private ClientRepository clientRepository;
     private TransactionRepository transactionRepository;
     private TransferTransactionRepository transferTransactionRepository;
-    private TransactionService transactionService;
-    private Client client;
-    private Wallet wallet;
-    private long userId = 1;
-    private Double amount = 100.0;
-    private Currency currency = Currency.INR;
-    private Long senderId = (long)3;
-    private Long receiverId = (long)4;
+
     private Client senderClient;
-    private Client receiverClient;
     private Wallet senderWallet;
+    private Client receiverClient;
     private Wallet receiverWallet;
+
+    private Long senderId = (long)1;
+    private Long receiverId = (long)2;
+    private double amount = 100.0;
+    private Currency currency = Currency.INR;
 
     @BeforeEach
     void setUp() {
-        clientRepository = mock(ClientRepository.class);
         walletRepository = mock(WalletRepository.class);
+        clientRepository = mock(ClientRepository.class);
         transactionRepository = mock(TransactionRepository.class);
         transferTransactionRepository = mock(TransferTransactionRepository.class);
         transactionService = new TransactionService(clientRepository, walletRepository, transactionRepository, transferTransactionRepository);
-        client = new Client("testUser", "password");
-        wallet = new Wallet(client, currency);
-        senderClient = new Client("senderUser", "password");
-        receiverClient = new Client("receiverUser", "password");
+
+        senderClient = new Client("Sender", "password");
+        receiverClient = new Client("Receiver", "password");
         senderWallet = new Wallet(senderClient, currency);
         receiverWallet = new Wallet(receiverClient, currency);
+
+        senderWallet.deposit(500.0);
+        receiverWallet.deposit(200.0);
     }
 
     @Test
-    void testWithdrawExpectWalletUpdatedSuccessfully() {
-        wallet.deposit(200.0);
-        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-        when(walletRepository.findByClient(client)).thenReturn(Optional.of(wallet));
+    void testDepositAmount() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
 
-        transactionService.transaction(userId, new TransactionRequest(amount, currency, TransactionType.WITHDRAW));
+        TransactionRequest request = new TransactionRequest(amount, currency, TransactionType.DEPOSIT);
+        transactionService.transaction(senderId, request);
 
-        verify(walletRepository).save(wallet);
-        assertTrue(wallet.checkBalance(100.0));
+        assertTrue(senderWallet.checkBalance(600.0));
+        verify(walletRepository, times(1)).save(senderWallet);
     }
 
     @Test
-    void testUnauthorizedAccessToWallet() {
-        when(clientRepository.findClientById(userId)).thenReturn(Optional.empty());
-        assertThrows(WalletNotFoundException.class, () -> transactionService.transaction(userId, new TransactionRequest(amount, currency, TransactionType.DEPOSIT)));
+    void testWithdrawAmount() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
+
+        TransactionRequest request = new TransactionRequest(amount, currency, TransactionType.WITHDRAW);
+        transactionService.transaction(senderId, request);
+
+        assertTrue(senderWallet.checkBalance(400.0));
+        verify(walletRepository, times(1)).save(senderWallet);
     }
 
     @Test
-    void testWalletNotFoundExpectWalletNotFoundException() {
-        when(clientRepository.findClientById(userId)).thenReturn(Optional.of(client));
-        when(walletRepository.findByClient(client)).thenReturn(Optional.empty());
+    void testWithdrawExceedingBalanceThrowsException() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
 
-        assertThrows(WalletNotFoundException.class, () -> transactionService.transaction(userId, new TransactionRequest(amount, currency, TransactionType.DEPOSIT)));
+        TransactionRequest request = new TransactionRequest(1000.0, currency, TransactionType.WITHDRAW);
+        assertThrows(RuntimeException.class, () -> transactionService.transaction(senderId, request));
     }
 
     @Test
-    void testTransferMoneyExpectWalletUpdatedSuccessfully() {
+    void testTransferAmountToReceiver() {
         when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
         when(clientRepository.findClientById(receiverId)).thenReturn(Optional.of(receiverClient));
         when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findByClient(receiverClient)).thenReturn(Optional.of(receiverWallet));
 
-        senderWallet.deposit(200.0);
-        TransactionRequest transactionRequest = new TransactionRequest(amount,currency,TransactionType.TRANSFER,receiverId);
-        transactionService.transaction(senderId, transactionRequest);
+        TransactionRequest request = new TransactionRequest(amount, currency, TransactionType.TRANSFER, receiverId);
+        transactionService.transaction(senderId, request);
 
-        verify(walletRepository).save(senderWallet);
-        verify(walletRepository).save(receiverWallet);
+        assertTrue(senderWallet.checkBalance(400.0));
+        assertTrue(receiverWallet.checkBalance(300.0));
+        verify(walletRepository, times(1)).save(senderWallet);
+        verify(walletRepository, times(1)).save(receiverWallet);
+    }
 
-        assertTrue(senderWallet.checkBalance(100.0));
-        assertTrue(receiverWallet.checkBalance(100.0));
+    @Test
+    void testTransferWhenReceiverWalletNotFoundThrowsException() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
+
+        when(clientRepository.findClientById(receiverId)).thenReturn(Optional.of(receiverClient));
+        when(walletRepository.findByClient(receiverClient)).thenReturn(Optional.empty()); // Receiver wallet not found
+
+        TransactionRequest request = new TransactionRequest(amount, currency, TransactionType.TRANSFER, receiverId);
+        assertThrows(WalletNotFoundException.class, () -> transactionService.transaction(senderId, request));
+    }
+
+    @Test
+    void testTransferWhenSenderWalletNotFoundThrowsException() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.empty()); // Sender wallet not found
+
+        TransactionRequest request = new TransactionRequest(amount, currency, TransactionType.TRANSFER, receiverId);
+        assertThrows(WalletNotFoundException.class, () -> transactionService.transaction(senderId, request));
+    }
+
+    @Test
+    void testWalletTransactionHistory() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
+
+        List<TransactionResponse> mockHistory = new ArrayList<>();
+        when(transactionRepository.findDepositsAndWithdrawals(senderWallet)).thenReturn(mockHistory);
+        when(transactionRepository.findWalletTransferTransHistory(senderWallet)).thenReturn(mockHistory);
+
+        List<TransactionResponse> history = transactionService.walletTransactionHistory(senderId);
+
+        assertNotNull(history);
+        assertEquals(0, history.size());
+    }
+
+    @Test
+    void testWalletTransactionHistoryById_TransactionFound() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
+
+        TransactionResponse mockTransaction = new TransactionResponse(1L, TransactionType.DEPOSIT, amount, currency, LocalDateTime.now());
+        when(transactionRepository.findTransactionTypeWithdrawAndDepositByIdAndWallet(1L, senderWallet)).thenReturn(mockTransaction);
+
+        TransactionResponse transaction = transactionService.walletTransactionHistoryById(senderId, 1L);
+
+        assertNotNull(transaction);
+//        assertEquals(1L, transaction.getId());
+    }
+
+    @Test
+    void testWalletTransactionHistoryById_TransactionNotFound() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.of(senderClient));
+        when(walletRepository.findByClient(senderClient)).thenReturn(Optional.of(senderWallet));
+
+        when(transactionRepository.findTransactionTypeWithdrawAndDepositByIdAndWallet(1L, senderWallet)).thenReturn(null);
+        when(transactionRepository.findWalletTransferTransHistoryByIdAndWallet(1L, senderWallet)).thenReturn(null);
+
+        assertThrows(TransactionIdNotFoundException.class, () -> transactionService.walletTransactionHistoryById(senderId, 1L));
+    }
+
+    @Test
+    void testUnauthorizedAccessToWallet() {
+        when(clientRepository.findClientById(senderId)).thenReturn(Optional.empty());
+        assertThrows(WalletNotFoundException.class, () -> transactionService.transaction(senderId, new TransactionRequest(amount, currency, TransactionType.DEPOSIT)));
     }
 }
+
+

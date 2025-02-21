@@ -1,8 +1,8 @@
 package com.example.walletApplication.services;
 
 import com.example.walletApplication.DTO.ClientRequest;
-import com.example.walletApplication.Exceptions.InvalidCredentialsException;
-import com.example.walletApplication.Exceptions.UserAlreadyExistsException;
+import com.example.walletApplication.exception.InvalidCredentialsException;
+import com.example.walletApplication.exception.UserAlreadyExistsException;
 import com.example.walletApplication.entity.Wallet;
 import com.example.walletApplication.enums.Currency;
 import com.example.walletApplication.entity.Client;
@@ -10,6 +10,7 @@ import com.example.walletApplication.messages.Messages;
 import com.example.walletApplication.repository.ClientRepository;
 import com.example.walletApplication.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,9 +34,7 @@ public class ClientService  {
     }
 
 
-    public void register(ClientRequest clientRequest){
-
-        assert clientRequest != null;
+    public void register(@NotNull ClientRequest clientRequest){
         String encodedPassword = passwordEncoder.encode(clientRequest.getPassword());
         System.out.println(encodedPassword);
         Client client = new Client(clientRequest.getUsername(),encodedPassword);
@@ -52,7 +51,7 @@ public class ClientService  {
         walletRepository.save(wallet);
     }
 
-    public Client login(ClientRequest clientRequest){
+    public Client login(@NotNull ClientRequest clientRequest){
 
         String username = clientRequest.getUsername();
         String password = clientRequest.getPassword();

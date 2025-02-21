@@ -48,8 +48,5 @@ public class TransactionResponse {
         this.senderId = senderId;
         this.receiverId  = receiverId;
     }
-    public TransactionResponse(){
-
-    }
 
 }
