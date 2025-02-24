@@ -72,20 +72,7 @@ public class ClientControllerTest {
                 .andExpect(content().string(Messages.USER_ALREADY_EXISTS));
     }
 
-//    @Test
-//    void testLoginSuccess() throws Exception {
-//        String password = "testPassword";
-//        String username = "testUser";
-//        ClientRequest newClient = new ClientRequest(username,password);
-//        Client client = new Client(username,password);
-//        doNothing().when(clientService).login(any(ClientRequest.class));
-//        when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(true);
-//        mockMvc.perform(post(USER_LOGIN_URL)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(clientRequest)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.username").value(username));
-//    }
+
 
     @Test
     void testLoginFailure() throws Exception {
@@ -98,6 +85,8 @@ public class ClientControllerTest {
                         .content(objectMapper.writeValueAsString(clientRequest)))
                 .andExpect(status().isUnauthorized());
     }
+
+
 
 
 }

@@ -58,6 +58,7 @@
         public List<TransactionResponse> walletTransactionHistory(Long userId) {
             Wallet wallet = fetchWalletOfClient(userId);
             List<TransactionResponse> depositsAndWithdrawals = transactionRepository.findDepositsAndWithdrawals(wallet);
+            // can be improved
             List<TransactionResponse> transferTransactions = transactionRepository.findWalletTransferTransHistory(wallet);
             List<TransactionResponse> history = new ArrayList<>();
             history.addAll(depositsAndWithdrawals);
