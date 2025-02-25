@@ -35,30 +35,29 @@ public class ClientService  {
 
 
     public void register(@NotNull ClientRequest clientRequest){
-//        String encodedPassword = passwordEncoder.encode(clientRequest.getPassword());
-//        System.out.println(encodedPassword);
-//        Client client = new Client(clientRequest.getUsername(),encodedPassword);
-//        List<Client> clients = clientRepository.findAll();
-//
-//        for(Client c : clients) {
-//            if(c.isSameUserName(clientRequest.getUsername())) {
-//                throw new UserAlreadyExistsException(Messages.USER_ALREADY_EXISTS);
-//            }
-//        }
-//
-//        clientRepository.save(client);
-//        Wallet wallet = new Wallet(client, Currency.INR);
-//        walletRepository.save(wallet);
+        String encodedPassword = passwordEncoder.encode(clientRequest.getPassword());
+        System.out.println(encodedPassword);
+        Client client = new Client(clientRequest.getUsername(),encodedPassword);
+        List<Client> clients = clientRepository.findAll();
+
+        for(Client c : clients) {
+            if(c.isSameUserName(clientRequest.getUsername())) {
+                throw new UserAlreadyExistsException(Messages.USER_ALREADY_EXISTS);
+            }
+        }
+
+        clientRepository.save(client);
+        Wallet wallet = new Wallet(client, Currency.INR);
+        walletRepository.save(wallet);
     }
 
     public Client login(@NotNull ClientRequest clientRequest){
 
-//        String username = clientRequest.getUsername();
-//        String password = clientRequest.getPassword();
-//        return clientRepository.findByUsername(username)
-//                .filter(client -> client.isValidPassword(password,passwordEncoder))
-//                .orElseThrow(() -> new InvalidCredentialsException(Messages.INVALID_CREDENTIALS));
-        return  null;
+        String username = clientRequest.getUsername();
+        String password = clientRequest.getPassword();
+        return clientRepository.findByUsername(username)
+                .filter(client -> client.isValidPassword(password,passwordEncoder))
+                .orElseThrow(() -> new InvalidCredentialsException(Messages.INVALID_CREDENTIALS));
     }
 
 }
