@@ -12,6 +12,7 @@
     import com.example.walletApplication.enums.Currency;
     import com.example.walletApplication.entity.Wallet;
     import com.example.walletApplication.enums.TransactionType;
+    import com.example.walletApplication.grpc.CurrencyConversionService;
     import com.example.walletApplication.messages.Messages;
     import com.example.walletApplication.repository.ClientRepository;
     import com.example.walletApplication.repository.TransactionRepository;
@@ -33,12 +34,22 @@
 
         private TransferTransactionRepository transferTransactionRepository;
 
+        private CurrencyConversionService currencyConversionService;
+
+
         @Autowired
-        public TransactionService(ClientRepository clientRepository, WalletRepository walletRepository, TransactionRepository transactionRepository, TransferTransactionRepository transferTransactionRepository) {
+        public TransactionService(
+                ClientRepository clientRepository,
+                WalletRepository walletRepository,
+                TransactionRepository transactionRepository,
+                TransferTransactionRepository transferTransactionRepository,
+                CurrencyConversionService currencyConversionService
+        ) {
             this.clientRepository = clientRepository;
             this.walletRepository = walletRepository;
             this.transactionRepository = transactionRepository;
             this.transferTransactionRepository = transferTransactionRepository;
+            this.currencyConversionService = currencyConversionService;
         }
 
 
@@ -89,7 +100,8 @@
             TransactionType type = transactionRequest.getType();
             Currency currency = transactionRequest.getCurrency();
             double amount = transactionRequest.getAmount();
-            double amountInINR = currency.convertToINR(amount);
+            double amountInINR = currencyConversionService.convertCurrency(currency.name(),"INR",amount);
+//            double amountInINR = currency.convertToINR(amount);
 
             if(type == TransactionType.DEPOSIT){
                 depositAmount(wallet, amountInINR, currency);
